@@ -114,6 +114,7 @@ local function checkMounted()
 end
 local firstCast = true
 local fishingSpellTable = AngleurRetail_FishingSpellTable
+local fishingSpellTable_MoP = AngleurMoP_FishingSpellTable
 function Angleur_LogicVariableHandler(self, event, unit, ...)
     local arg4, arg5 = ...
     -- Needed for when player zones into dungeon while mounted. Zone changes but no reload, and mount journal change doesn"t register
@@ -161,7 +162,7 @@ function Angleur_LogicVariableHandler(self, event, unit, ...)
         end
     elseif event == "UNIT_SPELLCAST_CHANNEL_START" and not issecretvalue(unit) and unit == "player" then
         if issecretvalue(arg5) then return end
-        if not CheckTable(fishingSpellTable, arg5) then return end
+        if not CheckTable(fishingSpellTable, arg5) and not CheckTable(fishingSpellTable_MoP, arg5) then return end
         midFishing = true
         EventRegistry:TriggerEvent("Angleur_StartFishing")
         Angleur_ActionHandler(Angleur)
@@ -186,7 +187,7 @@ function Angleur_LogicVariableHandler(self, event, unit, ...)
         Angleur_RecastReminder_Start(arg5)
     elseif event == "UNIT_SPELLCAST_CHANNEL_STOP" and not issecretvalue(unit) and unit == "player" then
         if issecretvalue(arg5) then return end
-        if not CheckTable(fishingSpellTable, arg5) then return end
+        if not CheckTable(fishingSpellTable, arg5) and not CheckTable(fishingSpellTable_MoP, arg5) then return end
         Angleur_TempCVars_ToggleUltraFocusAudio(false, "Cast/Reel")
         Angleur_TempCVarHandler:Release("autoLootDefault")
         if Angleur_TinyOptions.turnOffSoftInteract then Angleur_TempCVarHandler:Release("SoftTargetInteract", "SoftTargetInteractRange", "SoftTargetInteractRangeIsHard") end
